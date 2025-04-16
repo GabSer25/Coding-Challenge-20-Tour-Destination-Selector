@@ -1,6 +1,7 @@
 // components/DestinationSelector.jsx
 import React from 'react';
 
+  //Component for selecting a tour destination from a dropdown
 const DestinationSelector = ({ tours, selected, setSelected }) => {
   // Extract unique destination names
   const uniqueNames = ['All Destinations', ...new Set(tours.map((t) => t.name))];

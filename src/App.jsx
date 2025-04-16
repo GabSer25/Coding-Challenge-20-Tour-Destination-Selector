@@ -32,6 +32,7 @@ function App() {
   useEffect(() => {
     fetchTours();
   }, []);
+  
   // Filter Logic
   const filteredTours =
     selected === 'All Destinations'

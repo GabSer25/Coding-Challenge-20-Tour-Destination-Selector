@@ -1,7 +1,9 @@
 // components/TourCard.jsx
 import React from 'react';
 
+// TourCard component displays individual tour information
 const TourCard = ({ tour, onRemove }) => {
+  // Destructure tour object properties for easier access
   const { id, name, info, image, price } = tour;
 
   return (

@@ -1,35 +1,63 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+// App.jsx
+import React, { useEffect, useState } from 'react';
+import DestinationSelector from './components/DestinationSelector';
+import Gallery from './components/Gallery';
 
-function App() {
-  const [count, setCount] = useState(0)
+const App = () => {
+  const [tours, setTours] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [selected, setSelected] = useState('All Destinations');
+
+  // Fetch tour data when the component mounts
+  const fetchTours = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await fetch('https://course-api.com/react-tours-project');
+      if (!res.ok) throw new Error('Failed to fetch tours');
+      const data = await res.json();
+      setTours(data);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchTours();
+  }, []);
+
+  // Filter logic
+  const filteredTours =
+    selected === 'All Destinations'
+      ? tours
+      : tours.filter((tour) => tour.name === selected);
+
+  // Remove tour from list
+  const handleRemove = (id) => {
+    setTours((prev) => prev.filter((tour) => tour.id !== id));
+  };
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+    <main>
+      <h1>🌍 Tour Destination Selector</h1>
+      <DestinationSelector
+        tours={tours}
+        selected={selected}
+        setSelected={setSelected}
+      />
+      <Gallery
+        tours={filteredTours}
+        loading={loading}
+        error={error}
+        onRemove={handleRemove}
+        onRefresh={fetchTours}
+      />
+    </main>
+  );
+};
 
-export default App
+export default App;
+
